@@ -1,0 +1,256 @@
+CREATE TABLE Dept (
+Dnum   INT   PRIMARY KEY,
+DN     VARCHAR(50),
+Loc    VARCHAR(100)
+);
+
+
+CREATE TABLE EMPLOYEE (
+SSN    CHAR(11)  PRIMARY KEY,
+FName  VARCHAR(30),
+LName  VARCHAR(30),
+Name   VARCHAR(50),
+BirthD DATE,
+Gender CHAR(1),
+HireDate DATE,
+Dnum     INT,
+SupperSSN CHAR(11)
+);
+
+
+CREATE TABLE Project(
+Pnum   INT   PRIMARY KEY,
+PN     VARCHAR(50),
+Loc    VARCHAR(100),
+City   VARCHAR(50),
+Dnum   INT
+);
+
+
+CREATE TABLE Dependent (
+EmpSSN    CHAR(11),
+Dname     VARCHAR(30),
+BD        DATE,
+Gender    CHAR(1),
+Dnum     INT,
+PRIMARY KEY (EmpSSN, Dname)
+);
+
+CREATE TABLE Work_On(
+EmpSSN   CHAR(11),
+Pnum     INT,
+Hours    NUMBER(5,1),
+PRIMARY KEY (EmpSSN, Pnum)
+);
+
+
+Table DEPT created.
+
+
+Table EMPLOYEE created.
+
+
+Table PROJECT created.
+
+
+Table DEPENDENT created.
+
+
+Table WORK_ON created.
+
+
+ALTER TABLE EMPLOYEE
+ADD CONSTRAINT fk_emp_dept
+FOREIGN KEY (Dnum) REFERENCES Dept(Dnum);
+
+
+ALTER TABLE EMPLOYEE
+ADD CONSTRAINT fk_emp_super
+FOREIGN KEY (SupperSSN) REFERENCES EMPLOYEE(SSN);
+
+
+ALTER TABLE Project
+ADD CONSTRAINT fk_proj_dept
+FOREIGN KEY (Dnum) REFERENCES Dept(Dnum);
+
+ALTER TABLE Project DROP CONSTRAINT fk_proj_dept;
+ALTER TABLE Project
+    ADD CONSTRAINT fk_proj_dept
+    FOREIGN KEY (Dnum) REFERENCES Dept(Dnum);
+
+
+
+
+Table EMPLOYEE altered.
+
+
+Table EMPLOYEE altered.
+
+
+Table PROJECT altered.
+
+
+Error starting at line : 57 in command -
+ALTER TABLE Project
+ADD CONSTRAINT fk_proj_dept
+FOREIGN KEY (Dnum) REFERENCES Dept(Dnum)
+Error report -
+ORA-02275: such a referential constraint already exists in the table
+
+https://docs.oracle.com/error-help/db/ora-02275/02275. 00000 -  "such a referential constraint already exists in the table"
+*Cause:    Self-evident.
+*Action:   Remove the extra constraint.
+
+Table PROJECT altered.
+
+
+Table PROJECT altered.
+
+
+
+
+
+ALTER TABLE Dependent
+ADD CONSTRAINT fk_dep_emp
+FOREIGN KEY (EmpSSN) REFERENCES EMPLOYEE(SSN);
+
+
+Table DEPENDENT altered.
+
+
+ALTER TABLE Works_On
+ADD CONSTRAINT fk_work_emp
+FOREIGN KEY (EmpSSN) REFERENCES EMPLOYEED(SSN);
+
+Error starting at line : 74 in command -
+ALTER TABLE Works_On
+ADD CONSTRAINT fk_work_emp
+FOREIGN KEY (EmpSSN) REFERENCES EMPLOYEED(SSN)
+Error report -
+ORA-00942: table or view does not exist
+
+https://docs.oracle.com/error-help/db/ora-00942/00942. 00000 -  "table or view%s does not exist"
+*Cause:    The specified table or view did not exist, or a synonym
+           pointed to a table or view that did not exist.
+           To find existing user tables and views, query the
+           ALL_TABLES and ALL_VIEWS data dictionary views. Certain
+           privileges may be required to access the table. If an
+           application returned this message, then the table that the
+           application tried to access did not exist in the database, or
+           the application did not have access to it.
+*Action:   Check each of the following
+           - The spelling of the table or view name is correct.
+           - The referenced table or view name does exist.
+           - The synonym points to an existing table or view.
+
+SELECT constraint_name, table_name, status
+FROM user_constraints
+WHERE table_name IN ('DEPT','EMPLOYEE','PROJECT','DEPENDENT','WORK_ON')
+ORDER BY table_name;    
+    
+
+INSERT INTO DEPT VALUES (11 , 'Finance' ,      'Muscat');
+INSERT INTO DEPT VALUES (14 , 'Engineering' ,  'Sur');
+INSERT INTO DEPT VALUES (30 , 'Hr' ,           'Matrah');
+INSERT INTO DEPT VALUES (40 , 'Manager' ,      'Musnaah');
+INSERT INTO DEPT VALUES (50 , 'IT' ,           'Ibra');
+INSERT INTO DEPT VALUES (15 , 'Account' ,      'Salalah');
+
+
+
+INSERT INTO EMPLOYEE (SSN, FName, LName, Name, BirthD, Gender, HireDate, Dnum, SupperSSN)
+VALUES ('111111', 'Tibyan',  'Saad',   'Tibyan Saad',   DATE '2002-06-01',  'F', DATE '2020-01-01', 11, NULL);
+
+INSERT INTO EMPLOYEE (SSN, FName, LName, Name, BirthD, Gender, HireDate, Dnum, SupperSSN)
+VALUES ('222222', 'Mariya',  'Nabhan', 'Mariya Nabhan', DATE '2001-10-29',  'F', DATE '2021-03-01', 14, NULL);
+
+INSERT INTO EMPLOYEE (SSN, FName, LName, Name, BirthD, Gender, HireDate, Dnum, SupperSSN)
+VALUES ('333333', 'Samaher', 'Salam',  'Samaher Salam', DATE '1993-12-05', 'F', DATE '2015-06-01', 11, '111111');
+
+INSERT INTO EMPLOYEE (SSN, FName, LName, Name, BirthD, Gender, HireDate, Dnum, SupperSSN)
+VALUES ('444444', 'Rayan',   'Salam',  'Rayan Salam',   DATE '2006-07-06', 'M', DATE '2022-09-01', 14, '222222');
+
+INSERT INTO EMPLOYEE (SSN, FName, LName, Name, BirthD, Gender, HireDate, Dnum, SupperSSN)
+VALUES ('555555', 'Maryam',  'Saleem', 'Maryam Saleem', DATE '2001-07-26', 'F', DATE '2021-05-01', 15, '222222');
+
+COMMIT;
+
+
+INSERT INTO PROJECT (Pnum, PN, Loc, City, Dnum)
+VALUES (1, 'System Upgrade',  'Building A', 'Muscat', 11);
+
+INSERT INTO PROJECT (Pnum, PN, Loc, City, Dnum)
+VALUES (2, 'App Development',  'Building B', 'Sur', 14);
+
+INSERT INTO PROJECT (Pnum, PN, Loc, City, Dnum)
+VALUES (3, 'Budget plan',  'Building c', 'Matrah', 30);
+
+INSERT INTO PROJECT (Pnum, PN, Loc, City, Dnum)
+VALUES (4, 'ERP system',  'Building D', 'Muscat', 40);
+
+INSERT INTO PROJECT (Pnum, PN, Loc, City, Dnum)
+VALUES (5, 'Network',  'Building E', 'Ibra', 50);
+
+INSERT INTO PROJECT (Pnum, PN, Loc, City, Dnum)
+VALUES (6, 'Account System',  'Building F', 'Salalah', 15);
+COMMIT;
+
+
+SELECT * FROM PROJECT;
+
+
+INSERT INTO DEPENDENT (EMPSSN , Dname , BD , Gender, Dnum)
+VALUES('111111', 'Ahmed',  DATE '2010-04-01', 'M', 11);
+
+INSERT INTO DEPENDENT (EmpSSN, Dname, BD, Gender, Dnum)
+VALUES ('111111', 'Maha',    DATE '2013-08-15', 'F', 11);
+
+INSERT INTO DEPENDENT (EmpSSN, Dname, BD, Gender, Dnum)
+VALUES ('222222', 'Razan',   DATE '2008-12-20', 'F', 14);
+
+INSERT INTO DEPENDENT (EmpSSN, Dname, BD, Gender, Dnum)
+VALUES ('333333', 'Lara',    DATE '2015-06-10', 'F', 11);
+
+INSERT INTO DEPENDENT (EmpSSN, Dname, BD, Gender, Dnum)
+VALUES ('444444', 'Moosa',  DATE '2018-03-25', 'M', 14);
+
+INSERT INTO DEPENDENT (EmpSSN, Dname, BD, Gender, Dnum)
+VALUES ('555555', 'Farah',   DATE '2012-09-30', 'F', 15);
+COMMIT;
+
+SELECT * FROM DEPENDENT;
+
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('111111', 1, 20.5);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('111111', 2, 15.0);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('222222', 2, 35.0);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('222222', 3, 10.0);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('333333', 3, 25.0);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('333333', 4, 18.5);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('444444', 4, 30.0);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('444444', 5, 12.0);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('555555', 5, 22.5);
+
+INSERT INTO WORK_ON (EmpSSN, Pnum, Hours)
+VALUES ('555555', 6, 40.0);
+
+COMMIT;
+
+SELECT * FROM WORK_ON;
