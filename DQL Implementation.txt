@@ -1,0 +1,44 @@
+--1.Retrieve the first and last name of all employees along with their gender and birth date.
+SELECT FName, LName,Gender , BirthD
+FROM EMPLOYEE;
+
+--2.List all employees who work in a specific department.
+SELECT FName, LName,Dnum
+FROM EMPLOYEE
+WHERE Dnum = 14;
+
+--3.Find the employee who manages each department along with their hire date.
+SELECT PN, Loc, City
+FROM PROJECT;
+
+--4.Retrieve all dependents associated with a specific employee.
+SELECT E.FName, E.LName,E.HireDate, D.DN AS Department
+FROM EMPLOYEE E
+JOIN DEPT D ON E.Dnum = D.Dnum
+WHERE E.SupperSSN IS NULL;
+
+--5.List all employees who work on a specific project along with their working hours.
+SELECT Dname, BD,Gender
+FROM DEPENDENT
+WHERE EmpSSN = '111111';
+
+--6.Display all departments along with their locations.
+SELECT E.Name, E.LName, W.Hours
+FROM EMPLOYEE E
+JOIN WORK_ON W ON E.SSN = W.EmpSSN
+WHERE W.Pnum =2;
+
+--7.Find all employees supervised by a specific employee.
+SELECT DN, Loc
+FROM DEPT;
+
+--8.Retrieve all projects assigned to a specific department.
+SELECT FName, LName, Dnum
+FROM EMPLOYEE
+WHERE SupperSSN = '222222';
+
+--9.List all female/male dependents along with their birth date.
+SELECT PN, Loc,City
+FROM PROJECT
+WHERE Dnum = 11;
+
