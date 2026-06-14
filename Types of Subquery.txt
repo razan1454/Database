@@ -1,0 +1,44 @@
+What Is an SQL Subquery?
+A subquery, or nested query, is a query placed within another SQL query. There are many different scenarios where you may want to include a query in the WHERE, FROM, or SELECT clauses of your main query.
+
+To master subqueries, I recommend our interactive SQL Subqueries course that contains over 80 hands-on practical subquery exercises on different real-world datasets.
+
+1.Scalar Subqueries
+
+When a subquery returns a single value, or exactly one row and exactly one column, we call it a scalar subquery. This type of subquery is frequently used in the WHERE clause to filter the results of the main query. The subquery in our previous example is a scalar subquery, as it returns a single value (i.e. the average agency fee).
+
+Scalar subqueries can also be used in the main query’s SELECT statement. For example, let’s say we want to see the average price of all our paintings next to the price of each painting.
+
+
+
+2.Multiple-Row Subqueries
+
+If your subquery returns more than one row, it can be referred to as a multiple-row subquery. Note that this subquery type includes (1) subqueries that return one column with multiple rows (i.e. a list of values) and (2) subqueries that return multiple columns with multiple rows (i.e. tables).
+
+Subqueries that return one column and multiple rows are often included in the WHERE clause to filter the results of the main query. In this case, they are usually used with operators like IN, NOT IN, ANY, ALL, EXISTS, or NOT EXISTS that allow users to compare a particular value with the values in the list returned by the subquery.
+
+For example, let’s say you want to calculate the average agency fee for those agents who are not managers. You can use the following subquery to answer this question:
+
+SELECT AVG(agency_fee)
+FROM sales_agents
+WHERE id NOT IN (SELECT id
+                 FROM managers);
+
+The inner query will return a list of all manager IDs. Then the outer query filters only those sales agents who are not in the managers list and calculates an average agency fee paid to these agents. The query returns a single value – the average agency fee paid to non-managers ($1885).
+
+
+3.Correlated Subqueries
+
+There are also SQL subqueries where the inner query relies on information obtained from the outer query. These are correlated subqueries. Because of the interdependence between the main query and the inner query, this type of subquery can be more challenging to understand. Read this beginner-friendly guide to become more proficient with correlated subqueries in SQL.
+
+Once again, let’s go straight to the examples! Correlated subqueries are commonly used in the SELECT, WHERE, and FROM statements.
+
+If we want to calculate the  number of paintings found in each of our galleries, we can use the following query. Note the correlated subquery in the SELECT statement:
+
+SELECT city,
+ (SELECT count(*)
+  FROM paintings p
+  WHERE g.id = p.gallery_id) total_paintings
+FROM galleries g;
+
+Here, the subquery returns a scalar value with the total number of paintings in the corresponding gallery. The main query displays this information together with the city where that art gallery is located.
