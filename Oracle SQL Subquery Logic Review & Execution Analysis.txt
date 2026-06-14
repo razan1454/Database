@@ -1,0 +1,89 @@
+Oracle SQL Subquery Logic Review & Execution Analysis
+
+SELECT first_name, salary
+ FROM employees
+WHERE salary > AVG(salary);
+
+--1.correct 
+SELECT EMPLOYEE_ID,
+       FIRST_NAME,
+       LAST_NAME,
+       JOB_ID,
+       DEPARTMENT_ID,
+       SALARY                AS Employee_Salary,
+       ROUND((SELECT AVG(SALARY)
+       FROM EMPLOYEES), 2) AS Company_Avg,
+       ROUND(SALARY - 
+       (SELECT AVG(SALARY) 
+       FROM EMPLOYEES), 2) AS Above_Avg_By
+       FROM EMPLOYEES
+       WHERE SALARY > (SELECT AVG(SALARY)
+       FROM EMPLOYEES)
+       ORDER BY SALARY DESC;
+       
+--2.
+SELECT department_name
+FROM departments
+WHERE department_id = (
+SELECT department_id
+FROM employees
+);
+--2.correct
+SELECT department_name
+FROM departments
+WHERE department_id IN (
+      SELECT department_id
+      FROM employees
+      WHERE department_id IS NOT NULL
+      )
+      ORDER BY department_name;
+      
+
+
+--3.
+SELECT *
+FROM employees
+WHERE department_id IN (
+ SELECT salary
+  FROM employees
+
+--3.correct
+SELECT EMPLOYEE_ID,
+FIRST_NAME || ' ' || LAST_NAME   AS FULL_NAME,
+JOB_ID,
+SALARY
+DEPARTMENT_ID
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID IN(
+SELECT DEPARTMENT_ID
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID IS NOT NULL
+)
+ORDER BY DEPARTMENT_ID,
+SALARY DESC;
+
+
+
+--4.
+SELECT first_name
+FROM employees
+WHERE salary > (
+ SELECT salary
+ FROM employees
+ WHERE department_id = 90
+);
+
+
+--4.correct
+SELECT EMPLOYEE_ID,
+FIRST_NAME || ' ' || LAST_NAME   AS FULL_Name,
+JOB_ID,
+SALARY,
+DEPARTMENT_ID
+FROM EMPLOYEES
+WHERE SALARY > ALL(
+SELECT SALARY 
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID = 90
+)
+ORDER BY SALARY DESC;
